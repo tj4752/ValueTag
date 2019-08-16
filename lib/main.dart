@@ -9,83 +9,103 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Value Tag',
+      title: 'ValueTag',
       initialRoute: MyHomePage.id,
       routes: {
         MyHomePage.id: (context) => MyHomePage(),
         Registration.id: (context) => Registration(),
-        Login.id: (context) => Login(),
         Chat.id: (context) => Chat(),
       },
     );
   }
 }
-
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget{
   static const String id = "HOMESCREEN";
+  @override
+  _MyHomePage createState() => _MyHomePage();
+}
+class _MyHomePage extends State<MyHomePage> {
+
   String email;
   String password;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> loginUser() async {
+    FirebaseUser user = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Chat(
+          user: user,
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  width: 200.0,
-                  child: Image.asset("assets/logo.png"),
-                ),
-              ),
-          SizedBox(
-            height: 50,
-          ),
-          Container(
-            width: 300,
-              child: TextField(
-            keyboardType: TextInputType.emailAddress,
-                onChanged: (value) => email = value,
-            decoration: InputDecoration(
-              hintText: "Enter Your Email",
-              icon: Icon(Icons.email)
-            ),
-          )),
-          Container(
-              width: 300,
-              child: TextField(
-                obscureText: true,
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (value) => password = value,
-                decoration: InputDecoration(
-                    hintText: "Enter Your Password",
-                    icon: Icon(Icons.lock_outline)
-                ),
-              )),
-          SizedBox(
-            height: 20,
-          ),
-          CustomButton(
-            text: "Log In",
-            callback: () {
-                Navigator.of(context).pushNamed(Login.id);
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            child: GestureDetector(
-              onTap: () => Navigator.of(context).pushNamed(Registration.id),
-              child: Text(
-                'Don\'t have an account? Sign up.'
-              ),
-            )
-          )
-        ],
-      ),)
+      child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+           Hero(
+           tag: 'logo',
+      child: Container(
+        width: 200.0,
+        child: Image.asset("assets/logo.png"),
+      ),
+    ),
+    SizedBox(
+    height: 50,
+    ),
+    Container(
+    width: 300,
+    child: TextField(
+    keyboardType: TextInputType.emailAddress,
+    onChanged: (value) => email = value,
+    decoration: InputDecoration(
+    hintText: "Enter Your Email",
+    icon: Icon(Icons.email)
+    ),
+    )),
+    Container(
+    width: 300,
+    child: TextField(
+    obscureText: true,
+    keyboardType: TextInputType.emailAddress,
+    onChanged: (value) => password = value,
+    decoration: InputDecoration(
+    hintText: "Enter Your Password",
+    icon: Icon(Icons.lock_outline)
+    ),
+    )),
+    SizedBox(
+    height: 20,
+    ),
+        CustomButton(
+          text: "Log In",
+          callback: () async {
+            await loginUser();
+          },),
+    SizedBox(
+    height: 10,
+    ),
+    Container(
+    child: GestureDetector(
+    onTap: () => Navigator.of(context).pushNamed(Registration.id),
+    child: Text(
+    'Don\'t have an account? Sign up.'
+    ),
+    )
+    )
+    ],
+    ),)
     );
   }
 }
@@ -145,140 +165,72 @@ class _RegistrationState extends State<Registration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Value Tag"),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: Hero(
-              tag: 'logo',
-              child: Container(
-                child: Image.asset(
-                  "assets/logo.png",
+        appBar: AppBar(
+          title: Text("Value Tag"),
+          backgroundColor: Colors.black,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Hero(
+                tag: 'logo',
+                child: Container(
+                  width: 200.0,
+                  child: Image.asset("assets/logo.png"),
                 ),
               ),
-            ),
-          ),
-          SizedBox(
-            height: 40.0,
-          ),
-          TextField(
-            keyboardType: TextInputType.emailAddress,
-            onChanged: (value) => email = value,
-            decoration: InputDecoration(
-              hintText: "Enter Your Email...",
-              border: const OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(
-            height: 40.0,
-          ),
-          TextField(
-            autocorrect: false,
-            obscureText: true,
-            onChanged: (value) => password = value,
-            decoration: InputDecoration(
-              hintText: "Enter Your Password...",
-              border: const OutlineInputBorder(),
-            ),
-          ),
+              SizedBox(
+                height: 50,
+              ),
+              Container(
+                  width: 300,
+                  child: TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) => email = value,
+                    decoration: InputDecoration(
+                        hintText: "Enter Your Email",
+                        icon: Icon(Icons.email)
+                    ),
+                  )),
+              Container(
+                  width: 300,
+                  child: TextField(
+                    obscureText: true,
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) => password = value,
+                    decoration: InputDecoration(
+                        hintText: "Enter Your Password",
+                        icon: Icon(Icons.lock_outline)
+                    ),
+                  )),
+              SizedBox(
+                height: 20,
+              ),
           CustomButton(
             text: "Register",
             callback: () async {
               await registerUser();
             },
-          )
+          ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(MyHomePage.id),
+                    child: Text(
+                        'Already on ValueTag? Sign in.'
+                    ),
+                  )
+              )
         ],
       ),
-    );
+      ));
   }
 }
 
-  class Login extends StatefulWidget {
-  static const String id = "LOGIN";
-  @override
-  _LoginState createState() => _LoginState();
-  }
-
-  class _LoginState extends State<Login> {
-  String email;
-  String password;
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Future<void> loginUser() async {
-  FirebaseUser user = await _auth.signInWithEmailAndPassword(
-  email: email,
-  password: password,
-  );
-
-  Navigator.push(
-  context,
-  MaterialPageRoute(
-  builder: (context) => Chat(
-  user: user,
-  ),
-  ),
-  );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-  return Scaffold(
-  appBar: AppBar(
-  title: Text("Tensor Chat"),
-  ),
-  body: Column(
-  mainAxisAlignment: MainAxisAlignment.center,
-  crossAxisAlignment: CrossAxisAlignment.stretch,
-  children: <Widget>[
-  Expanded(
-  child: Hero(
-  tag: 'logo',
-  child: Container(
-  child: Image.asset(
-  "assets/images/logo.png",
-  ),
-  ),
-  ),
-  ),
-  SizedBox(
-  height: 40.0,
-  ),
-  TextField(
-  keyboardType: TextInputType.emailAddress,
-  onChanged: (value) => email = value,
-  decoration: InputDecoration(
-  hintText: "Enter Your Email...",
-  border: const OutlineInputBorder(),
-  ),
-  ),
-  SizedBox(
-  height: 40.0,
-  ),
-  TextField(
-  autocorrect: false,
-  obscureText: true,
-  onChanged: (value) => password = value,
-  decoration: InputDecoration(
-  hintText: "Enter Your Password...",
-  border: const OutlineInputBorder(),
-  ),
-  ),
-  CustomButton(
-  text: "Log In",
-  callback: () async {
-  await loginUser();
-  }
-  )
-  ],
-  ),
-  );
-  }
-  }
 class Chat extends StatefulWidget {
   static const String id = "CHAT";
   final FirebaseUser user;
